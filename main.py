@@ -108,7 +108,7 @@ class Parole_logs:
     def buttons(self):
         self.button = Button(text = "Ģenerēt paroli", font=('Bookman Old Style', 10, 'normal'), bg = "LightBlue1")
         self.button.grid(row=4, column = 2, padx = 10, pady = 8)
-        self.button.configure(command=lambda: [Parole_logs.ievade(self), Parole_logs.sifrejums(self), Parole_logs.parbaude(self)]) #[Person.getting_values(self), Person.maths(self), Person.outputs(self)]
+        self.button.configure(command=lambda: [Parole_logs.ievade(self), Parole_logs.sifrejums(self), Parole_logs.parbaude(self)])
 
     def imidzs(self):
         self.image = Image.open("keyboard.jpg")
