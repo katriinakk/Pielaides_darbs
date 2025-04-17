@@ -17,24 +17,26 @@ class Parole_logs:
 
 
     def leibeli(self):
+        # teksti
         self.label = Label(text = "Paroļu ģenerātors", font=('Bookman Old Style', 12, 'bold'), bg = "LightBlue1")
         self.label.grid(row = 1, column = 2, padx = 10, pady = 20)
 
         self.label1 = Label(text = "Ievadiet vārdu, kuru vēlaties pielāgot parolei:", font=('Bookman Old Style', 10, 'normal'), bg = "azure")
         self.label1.grid(row = 2, column = 2, padx = 10, pady = 8)
 
-        self.autputss = Label(text ='', fg= "OrangeRed2", font=('Bookman Old Style', 10, 'bold'))
-        self.papildu = Label(text= '', font=('Bookman Old Style', 10, 'normal'))
-        # self.teksts = Text(self.master, height = 5, width = 20)
+        self.autputss = Label(text ='', fg= "OrangeRed2", font=('Bookman Old Style', 10, 'bold'), bg = "azure")
+        self.papildu = Label(text= '', font=('Bookman Old Style', 10, 'normal'), bg = "azure")
+        self.papildu.grid(row=6, column = 2)
         self.autputss.grid(row=5, column = 2, padx = 10, pady = 5)
 
     def entriji(self):
+        # ievades logs
         self.entry = Entry(width = 25)
         self.entry.grid(row = 3, column = 2, padx = 10, pady = 8)
 
-    def ievade(self):
+    def ievade(self): # funkcija, kura pārbauda, vai ievadē ir ievadīa vērtība un tiek definēts paroles vārds
         if not self.entry.get():
-            #API
+            # API
             try:
                 url = "https://random-word-api.herokuapp.com/word"
                 response = requests.get(url)
@@ -42,19 +44,19 @@ class Parole_logs:
                 self.parole = random.choice(words)
                 print(self.parole)
             except:
-                self.autputss['text'] = "Nevar saņemt datus no API, lūdzu ievadiet vārdu manuāli"
-                # erors = "Nevar saņemt datus no API, lūdzu ievadiet vārdu manuāli"
-                # self.text = erors
-                # Parole_logs.autputs(self)
+                self.autputss['text'] = "Nevar saņemt datus no API,"
+                self.papildu['text'] = "lūdzu ievadiet vārdu manuāli"
 
         else:
             self.parole = self.entry.get()
             print(self.parole)
 
-    def sifrejums(self):
+    def sifrejums(self): # funkcija, kura šifrē vārdu
+        # tiek izveidota vārdnīca, pēc kuras tiek šifrēti burti:
         self.sifrs = {'a': '4','b': '6', 'c': '<', 'd': '.1', 'e': '3', 'f': 'i=', 'g': '8', 'h': 'iu', 'i': '1', 'j': ')', 'k': ')<', 'l': '[', 'm': 'nn', 'n': 'h', 'o': '0', 'p': '>',  'q': '9', 'r': ']*', 's': '5',  't': '7', 'u': 'v', 'v': '^', 'w': '^^', 'x': '//', 'y': '/', 'z': '2'}
         self.niu_pasvord = ""
 
+        #cikls, kurš iet cauri katram burtam (33% tas tiks šifrēts, 33% - mainīts uz lielo burtu, 33% - nemainīts)
         for lett in self.parole:
             x = random.randint(1,3)
             if x == 1:
@@ -66,8 +68,9 @@ class Parole_logs:
 
         print(self.niu_pasvord)
 
-    def parbaude(self):
+    def parbaude(self): # funkcija pārbauda, vai parole atbilst kritērijiem
 
+        #vai parole ir diapazona no 10 līdz 16, ja nē, tad to labo
         if not 10 < len(self.niu_pasvord):
             x = 10-len(self.niu_pasvord)
             for i in range(x):
@@ -79,33 +82,37 @@ class Parole_logs:
         t = 0
         y = 0
         p = 0
+        #vai parolē ir vismaz viens lielais burts?
         for lett in self.niu_pasvord:
             if lett.isupper() == True:
                 p +=1
         if p == 0:
             self.niu_pasvord = self.niu_pasvord+ random.choice(list(self.sifrs.keys())).upper()
 
+        #vai parolē ir vismaz viena speciāla rakstzīme?
         for lett in self.niu_pasvord:
             if lett.isalnum() == False:
                 t +=1
         if t == 0:       
                 self.niu_pasvord = self.niu_pasvord + random.choice(string.punctuation)
 
+        #vai parolē ir vismaz viens cipars?s
         for lett in self.niu_pasvord:
             if lett.isdigit() == True:
                 y +=1
-
         if y == 0:
             self.niu_pasvord = self.niu_pasvord + str(random.randrange(10))
 
+
+        # izvada paroli uz grafiskās saskarnes
         self.autputss['text'] = self.niu_pasvord
         tekstins = ' no vārda "'+ self.parole+'"'
         self.papildu['text'] = tekstins
-        self.papildu.grid(row=6, column = 2)
+        
         
         print(self.niu_pasvord)
 
-    def buttons(self):
+    def buttons(self): # poga, kura palaiž visas funkcijas
         self.button = Button(text = "Ģenerēt paroli", font=('Bookman Old Style', 10, 'normal'), bg = "LightBlue1")
         self.button.grid(row=4, column = 2, padx = 10, pady = 8)
         self.button.configure(command=lambda: [Parole_logs.ievade(self), Parole_logs.sifrejums(self), Parole_logs.parbaude(self)])
