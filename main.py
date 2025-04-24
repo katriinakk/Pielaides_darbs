@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import*
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import requests
 import random
@@ -12,27 +13,27 @@ class Parole_logs:
     def __init__(self, master):
         self.master = master
         self.master.title("Paroles ģenerātors")
-        self.master.geometry("330x500")
+        self.master.geometry("400x500")
         self.master.configure(bg= "azure")
 
 
     def leibeli(self):
         # teksti
         self.label = Label(text = "Paroļu ģenerātors", font=('Bookman Old Style', 12, 'bold'), bg = "LightBlue1")
-        self.label.grid(row = 1, column = 2, padx = 10, pady = 20)
+        self.label.grid(row = 1, column = 2, padx = 125, pady = 20)
 
         self.label1 = Label(text = "Ievadiet vārdu, kuru vēlaties pielāgot parolei:", font=('Bookman Old Style', 10, 'normal'), bg = "azure")
-        self.label1.grid(row = 2, column = 2, padx = 10, pady = 8)
+        self.label1.grid(row = 2, column = 2, padx = 20, pady = 8)
 
         self.autputss = Label(text ='', fg= "OrangeRed2", font=('Bookman Old Style', 10, 'bold'), bg = "azure")
         self.papildu = Label(text= '', font=('Bookman Old Style', 10, 'normal'), bg = "azure")
         self.papildu.grid(row=6, column = 2)
-        self.autputss.grid(row=5, column = 2, padx = 10, pady = 5)
+        self.autputss.grid(row=5, column = 2, padx = 20, pady = 5)
 
     def entriji(self):
         # ievades logs
         self.entry = Entry(width = 25)
-        self.entry.grid(row = 3, column = 2, padx = 10, pady = 8)
+        self.entry.grid(row = 3, column = 2, padx = 20, pady = 8)
 
     def ievade(self): # funkcija, kura pārbauda, vai ievadē ir ievadīa vērtība un tiek definēts paroles vārds
         if not self.entry.get():
@@ -50,6 +51,10 @@ class Parole_logs:
         else:
             self.parole = self.entry.get()
             print(self.parole)
+            if self.parole.isalpha() == False:
+                self.autputss['text'] = "Nepareizi ievadīts vārds"
+                self.papildu['text'] = "Pārliecinieties, ka vārds satur tikai latīņu alfabēta burtus"
+                
 
     def sifrejums(self): # funkcija, kura šifrē vārdu
         # tiek izveidota vārdnīca, pēc kuras tiek šifrēti burti:
@@ -105,31 +110,51 @@ class Parole_logs:
 
 
         # izvada paroli uz grafiskās saskarnes
-        self.autputss['text'] = self.niu_pasvord
-        tekstins = ' no vārda "'+ self.parole+'"'
-        self.papildu['text'] = tekstins
+        if self.parole.isalpha() == True:
+            self.autputss['text'] = self.niu_pasvord
+            tekstins = ' no vārda "'+ self.parole+'"'
+            self.papildu['text'] = tekstins
         
         
         print(self.niu_pasvord)
 
-    def buttons(self): # poga, kura palaiž visas funkcijas
-        self.button = Button(text = "Ģenerēt paroli", font=('Bookman Old Style', 10, 'normal'), bg = "LightBlue1")
-        self.button.grid(row=4, column = 2, padx = 10, pady = 8)
-        self.button.configure(command=lambda: [Parole_logs.ievade(self), Parole_logs.sifrejums(self), Parole_logs.parbaude(self)])
+    
 
     def imidzs(self):
         self.image = Image.open("keyboard.jpg")
         self.image = self.image.resize((200, 150))
         self.image2 = ImageTk.PhotoImage(self.image)
         self.labelss = tk.Label(self.master, image=self.image2)
-        self.labelss.grid(row=7, column= 2, padx =10, pady=10)
+        self.labelss.grid(row=7, column= 2, padx =20, pady=10)
+
+    
+
+    def buttons(self): # poga, kura palaiž visas funkcijas
+        self.button = Button(text = "Ģenerēt paroli", font=('Bookman Old Style', 10, 'normal'), bg = "LightBlue1")
+        self.button.grid(row=4, column = 2, padx = 20, pady = 8)
+        self.button.configure(command=lambda: [Parole_logs.ievade(self), Parole_logs.sifrejums(self), Parole_logs.parbaude(self)])
+
+        self.imagei = Image.open("info.png")
+        self.imagei = self.imagei.resize((50, 50))
+        self.image2i = ImageTk.PhotoImage(self.imagei)
+        self.butonsi = Button(self.master, text = 'te', image = self.image2i, command =lambda: self.vindovs())
+        self.butonsi.grid(row = 8, column = 2, padx =20, pady=10)
+
+    def vindovs(self):
+        messagebox.showinfo("Informācija",  "Sveicināti paroļu ģeneratorā !!!\nAr šo aplikācijas palīdzību, Jūs varēsiet bez grūtībām ģenerēt paroles.\n\
+Ja Jūs vēlaties parolē iekļaut vārdu pēc savas izvēles, tad to ievadiet ievades lauciņā. Ja Jūs vēlaties, lai aplikācija ģenerē nejaušu paroli\
+tad atstājiet lauciņu tukšu, un kods ņems nejaušus vārdus no angļu valodas vārdnīcas\n Lauciņā nedrīkst vadīt speciālas rakstzīmes, mīkstinājuma zīmes \
+un garumzīmes !!!") 
+
+
+
 
 logs = Tk()
 a = Parole_logs(logs)
 a.leibeli()
 a.entriji()
-a.buttons()
 a.imidzs()
+a.buttons()
 
 
 logs.mainloop()
